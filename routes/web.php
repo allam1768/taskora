@@ -1,7 +1,40 @@
 <?php
 
+use App\Http\Controllers\Auth\LogoutController;
+use App\Livewire\Auth\Login;
+use App\Livewire\Auth\Register;
+use App\Livewire\Profile\EditProfile;
+use App\Livewire\Team\Members;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::middleware('guest')->group(function () {
+    Route::get('/login', Login::class)->name('login');
+    Route::get('/register', Register::class)->name('register');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    Route::get('/profile', EditProfile::class)->name('profile');
+    Route::get('/team', Members::class)->name('team.members');
+
+    // Route tugas modul Nafid
+    Route::get('/tasks', function () {
+        return view('dashboard');
+    })->name('tasks');
+
+    // Route khusus role Admin
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/admin/management', function () {
+            return view('dashboard');
+        })->name('admin.management');
+    });
+
+    Route::post('/logout', LogoutController::class)->name('logout');
 });
