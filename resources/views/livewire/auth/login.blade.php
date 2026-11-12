@@ -106,7 +106,10 @@
         </div>
 
         <p class="mt-6 text-center text-xs text-slate-500">
-            Belum punya akun? Hubungi Administrator tim Taskora.
+            Belum memiliki akun?
+            <a href="{{ route('register') }}" wire:navigate class="font-semibold text-indigo-600 hover:text-indigo-500 hover:underline">
+                Daftar sekarang
+            </a>
         </p>
     </div>
 </div>
