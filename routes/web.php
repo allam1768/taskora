@@ -24,5 +24,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', EditProfile::class)->name('profile');
     Route::get('/team', Members::class)->name('team.members');
 
+    // Route placeholder tugas modul Nafid terlindungi middleware auth
+    Route::get('/tasks', function () {
+        return view('dashboard');
+    })->name('tasks');
+
     Route::post('/logout', LogoutController::class)->name('logout');
 });
