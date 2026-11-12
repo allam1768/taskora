@@ -2,11 +2,18 @@
     <div class="min-h-full">
         <header class="bg-white border-b border-slate-200">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="h-9 w-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-sm">
-                        T
+                <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-3">
+                        <div class="h-9 w-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-sm">
+                            T
+                        </div>
+                        <span class="text-xl font-bold tracking-tight text-slate-900">Taskora</span>
                     </div>
-                    <span class="text-xl font-bold tracking-tight text-slate-900">Taskora</span>
+
+                    <nav class="hidden md:flex items-center gap-4 text-sm font-medium">
+                        <a href="{{ route('dashboard') }}" class="text-indigo-600 font-semibold">Dashboard</a>
+                        <a href="{{ route('team.members') }}" wire:navigate class="text-slate-600 hover:text-slate-900 transition">Anggota Tim</a>
+                    </nav>
                 </div>
 
                 <div class="flex items-center gap-4">

@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Profile\EditProfile;
+use App\Livewire\Team\Members;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -21,6 +22,7 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
 
     Route::get('/profile', EditProfile::class)->name('profile');
+    Route::get('/team', Members::class)->name('team.members');
 
     Route::post('/logout', LogoutController::class)->name('logout');
 });
