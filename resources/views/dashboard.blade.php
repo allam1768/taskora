@@ -10,15 +10,15 @@
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <div class="flex items-center gap-3">
-                        <div class="h-8 w-8 rounded-full bg-indigo-50 border border-indigo-200 flex items-center justify-center text-xs font-semibold text-indigo-700">
+                    <a href="{{ route('profile') }}" wire:navigate class="flex items-center gap-3 group hover:opacity-80 transition">
+                        <div class="h-8 w-8 rounded-full bg-indigo-50 border border-indigo-200 flex items-center justify-center text-xs font-semibold text-indigo-700 group-hover:bg-indigo-100 transition">
                             {{ strtoupper(substr(auth()->user()?->name ?? 'U', 0, 1)) }}
                         </div>
                         <div class="hidden sm:block text-left">
-                            <p class="text-sm font-semibold text-slate-800 leading-none">{{ auth()->user()?->name }}</p>
+                            <p class="text-sm font-semibold text-slate-800 leading-none group-hover:text-indigo-600 transition">{{ auth()->user()?->name }}</p>
                             <p class="text-xs text-slate-500 mt-0.5 leading-none">{{ auth()->user()?->email }}</p>
                         </div>
-                    </div>
+                    </a>
 
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
