@@ -25,6 +25,16 @@
     </header>
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {{-- Flash Notification --}}
+        @if (session()->has('status'))
+            <div class="mb-6 rounded-xl bg-emerald-50 border border-emerald-200 p-4 flex items-center gap-3 text-emerald-800 text-sm">
+                <svg class="h-5 w-5 text-emerald-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <p class="font-medium">{{ session('status') }}</p>
+            </div>
+        @endif
+
         <div class="sm:flex sm:items-center sm:justify-between mb-6">
             <div>
                 <h1 class="text-2xl font-bold text-slate-900">Daftar Anggota Tim</h1>
@@ -78,6 +88,11 @@
                             <th scope="col" class="px-3 py-3.5 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
                                 Bergabung Sejak
                             </th>
+                            @can('manage-members')
+                                <th scope="col" class="px-3 py-3.5 text-right pr-6 text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                                    Aksi Admin
+                                </th>
+                            @endcan
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200 bg-white">
@@ -110,10 +125,25 @@
                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-500">
                                     {{ $member->created_at?->format('d M Y') ?? '-' }}
                                 </td>
+                                @can('manage-members')
+                                    <td class="whitespace-nowrap px-3 py-4 text-right pr-6 text-sm">
+                                        @if ($member->id !== auth()->id())
+                                            <button
+                                                wire:click="updateMemberRole({{ $member->id }}, '{{ $member->role === 'admin' ? 'member' : 'admin' }}')"
+                                                wire:loading.attr="disabled"
+                                                class="text-xs font-medium text-indigo-600 hover:text-indigo-900 hover:underline"
+                                            >
+                                                Ubah ke {{ $member->role === 'admin' ? 'Member' : 'Admin' }}
+                                            </button>
+                                        @else
+                                            <span class="text-xs text-slate-400">Akun Anda</span>
+                                        @endif
+                                    </td>
+                                @endcan
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-6 py-12 text-center text-sm text-slate-500">
+                                <td colspan="{{ auth()->user()?->can('manage-members') ? 5 : 4 }}" class="px-6 py-12 text-center text-sm text-slate-500">
                                     Tidak ada anggota tim yang cocok dengan pencarian atau filter.
                                 </td>
                             </tr>

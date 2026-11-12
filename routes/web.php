@@ -24,10 +24,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', EditProfile::class)->name('profile');
     Route::get('/team', Members::class)->name('team.members');
 
-    // Route placeholder tugas modul Nafid terlindungi middleware auth
+    // Route tugas modul Nafid
     Route::get('/tasks', function () {
         return view('dashboard');
     })->name('tasks');
+
+    // Route khusus role Admin
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/admin/management', function () {
+            return view('dashboard');
+        })->name('admin.management');
+    });
 
     Route::post('/logout', LogoutController::class)->name('logout');
 });

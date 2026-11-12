@@ -3,6 +3,7 @@
 namespace App\Livewire\Team;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -23,6 +24,20 @@ class Members extends Component
     public function updatingRole(): void
     {
         $this->resetPage();
+    }
+
+    public function updateMemberRole(int $userId, string $newRole): void
+    {
+        Gate::authorize('manage-members');
+
+        if (! in_array($newRole, ['admin', 'member'], true)) {
+            return;
+        }
+
+        $user = User::findOrFail($userId);
+        $user->update(['role' => $newRole]);
+
+        session()->flash('status', "Peran {$user->name} berhasil diubah menjadi {$newRole}.");
     }
 
     public function render()
