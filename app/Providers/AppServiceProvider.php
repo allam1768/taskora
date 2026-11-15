@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Task;
 use App\Models\User;
+use App\Policies\TaskPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -24,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('admin', function (User $user): bool {
             return $user->isAdmin();
         });
+
+        Gate::policy(Task::class, TaskPolicy::class);
 
         Gate::define('manage-members', function (User $user): bool {
             return $user->isAdmin();

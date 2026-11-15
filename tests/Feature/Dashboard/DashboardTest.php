@@ -3,6 +3,8 @@
 namespace Tests\Feature\Dashboard;
 
 use App\Livewire\Dashboard;
+use App\Livewire\Tasks\Index as TasksIndex;
+use App\Models\Task;
 use App\Models\User;
 use App\Services\TaskDataService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -88,6 +90,8 @@ class DashboardTest extends TestCase
     public function test_dashboard_search_filters_tasks_by_title(): void
     {
         $user = User::factory()->create();
+        Task::factory()->create(['title' => 'Design System & Navigation Shell']);
+        Task::factory()->done()->create(['title' => 'Automated CI/CD Deployment Pipeline']);
 
         Livewire::actingAs($user)
             ->test(Dashboard::class)
@@ -154,14 +158,14 @@ class DashboardTest extends TestCase
             ->assertSee('Upcoming Deadlines');
     }
 
-    public function test_tasks_route_renders_dashboard_view(): void
+    public function test_tasks_route_renders_task_management(): void
     {
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->get('/tasks');
 
         $response->assertStatus(200);
-        $response->assertSeeLivewire(Dashboard::class);
+        $response->assertSeeLivewire(TasksIndex::class);
     }
 
     public function test_my_tasks_scope_activates_personal_filter(): void
@@ -178,16 +182,7 @@ class DashboardTest extends TestCase
     {
         $user = User::factory()->create(['name' => 'Database User']);
 
-        Schema::create('tasks', function ($table) {
-            $table->id();
-            $table->string('title');
-            $table->text('description')->nullable();
-            $table->string('status')->default('To Do');
-            $table->string('priority')->default('Medium');
-            $table->date('due_date')->nullable();
-            $table->foreignId('user_id')->nullable();
-            $table->timestamps();
-        });
+        $this->assertTrue(Schema::hasTable('tasks'));
 
         DB::table('tasks')->insert([
             [
@@ -224,7 +219,5 @@ class DashboardTest extends TestCase
         $tasks = $service->getTasks();
         $this->assertCount(2, $tasks);
         $this->assertEquals('Real Database Task 1', $tasks->first()->title);
-
-        Schema::dropIfExists('tasks');
     }
 }

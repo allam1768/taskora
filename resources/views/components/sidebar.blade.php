@@ -7,8 +7,8 @@
     $currentScope = request()->query('scope') ?? (request()->query('my') ? 'my' : null);
 
     $isDashboardActive = request()->routeIs('dashboard') && empty($currentScope);
-    $isAllTasksActive = (request()->routeIs('tasks') || (request()->routeIs('dashboard') && request()->has('status'))) && $currentScope !== 'my';
     $isMyTasksActive = $currentScope === 'my';
+    $isAllTasksActive = (request()->routeIs('tasks') || (request()->routeIs('dashboard') && request()->has('status'))) && ! $isMyTasksActive;
     $isTeamActive = request()->routeIs('team.members');
     $isProfileActive = request()->routeIs('profile');
 
