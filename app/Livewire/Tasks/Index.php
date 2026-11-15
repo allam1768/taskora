@@ -244,42 +244,38 @@ class Index extends Component
 
     public function render()
     {
-        $query = Task::query()->with('assignee');
+        $base = Task::query();
 
         if (trim($this->search) !== '') {
             $keyword = '%'.trim($this->search).'%';
-            $query->where(function ($q) use ($keyword) {
+            $base->where(function ($q) use ($keyword) {
                 $q->where('title', 'like', $keyword)
                     ->orWhere('description', 'like', $keyword);
             });
         }
 
+        if (in_array($this->priority, ['high', 'medium', 'low'], true)) {
+            $base->where('priority', $this->priority);
+        }
+
+        if ($this->onlyMy && Auth::check()) {
+            $base->where('user_id', Auth::id());
+        }
+
+        $stats = [
+            'total' => (clone $base)->count(),
+            'todo' => (clone $base)->where('status', 'todo')->count(),
+            'in_progress' => (clone $base)->where('status', 'in_progress')->count(),
+            'done' => (clone $base)->where('status', 'done')->count(),
+        ];
+
+        $query = (clone $base)->with('assignee');
+
         if (in_array($this->status, ['todo', 'in_progress', 'done'], true)) {
             $query->where('status', $this->status);
         }
 
-        if (in_array($this->priority, ['high', 'medium', 'low'], true)) {
-            $query->where('priority', $this->priority);
-        }
-
-        if ($this->onlyMy && Auth::check()) {
-            $query->where('user_id', Auth::id());
-        }
-
         $tasks = $query->latest('created_at')->paginate($this->perPage)->withQueryString();
-
-        $statsQuery = Task::query();
-
-        if ($this->onlyMy && Auth::check()) {
-            $statsQuery->where('user_id', Auth::id());
-        }
-
-        $stats = [
-            'total' => (clone $statsQuery)->count(),
-            'todo' => (clone $statsQuery)->where('status', 'todo')->count(),
-            'in_progress' => (clone $statsQuery)->where('status', 'in_progress')->count(),
-            'done' => (clone $statsQuery)->where('status', 'done')->count(),
-        ];
 
         return view('livewire.tasks.index', [
             'tasks' => $tasks,

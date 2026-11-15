@@ -26,7 +26,7 @@ class TaskManagementTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSeeLivewire(Index::class);
-        $response->assertSee('Task Management');
+        $response->assertSee('Tasks');
     }
 
     public function test_admin_can_create_a_task(): void
